@@ -9,8 +9,8 @@ from datetime import datetime, timezone
 import sys
 
 intents = discord.Intents.all()
-owner_ids = [707111534689648760, 875659025210040380]
-ALLOWED_USER_IDS = [1169071612960710666, 707111534689648760]
+owner_ids = [ID_1, ID_2 ]
+ALLOWED_USER_IDS = [ALLOWED USERS_1, ALLOWED USERS_2 ]
 
 react_mode = {'enabled': False, 'emoji': None}
 timers = {}
@@ -77,18 +77,15 @@ async def send_about_embed(bot, msg):
 async def dm_event(ctx, user, message, amount):
     """Sends a specified number of DM messages to a user."""
     try:
-        # Split the amount into manageable batches (e.g., 50 messages per batch)
         batch_size = 50
         total_batches = amount // batch_size
         remaining_messages = amount % batch_size
 
-        # Send in batches
         for batch in range(total_batches):
             for _ in range(batch_size):
                 await user.send(message)
-            await asyncio.sleep(2)  # Sleep after sending each batch to avoid rate limit
+            await asyncio.sleep(2) 
 
-        # Handle remaining messages if any
         for _ in range(remaining_messages):
             await user.send(message)
 
@@ -151,9 +148,8 @@ async def restart_bot(ctx,bot , bot_script_name="main.py"):
         await ctx.send("♻️ Restarting the bot...")
         print(f"[RESTART] Bot restart initiated by {ctx.author} ({ctx.author.id}).")
 
-        await bot.close()  # Graceful shutdown
+        await bot.close() 
 
-        # Optional restart logic (only works if launched from CLI)
         os.execl(sys.executable, sys.executable, bot_script_name)
 
     except Exception as e:
@@ -205,12 +201,10 @@ async def handle_commands(bot, msg):
 
             target_user = None
 
-            # Try mention first
             if msg.mentions:
                 target_user = msg.mentions[0]
             else:
                 try:
-                    # Try user ID
                     target_user = await msg.client.fetch_user(int(user_arg))
                 except:
                     for guild in msg.client.guilds:
@@ -238,9 +232,6 @@ async def handle_commands(bot, msg):
             except Exception as e:
                 await msg.channel.send(f"❌ Failed to flood: {e}", delete_after=5)
 
-
-        
-
         elif content.startswith('*flood '):
            parts = content[len('*flood '):].split(maxsplit=2)
             
@@ -258,7 +249,6 @@ async def handle_commands(bot, msg):
                    await msg.channel.send("You do not have permission to use this command.", delete_after=5)
                    return
 
-               # Get the user by ID or mention, ensure to check both member and user object
                user = msg.guild.get_member(user_id) or bot.get_user(user_id)
                if user:
                    await dm_event(msg, user, message_text, amount)
@@ -420,7 +410,7 @@ async def handle_commands(bot, msg):
 
 async def start_bot(token):
     global start_time
-    start_time = datetime.now(timezone.utc)   # Initialize start_time when the bot starts
+    start_time = datetime.now(timezone.utc)   
     bot = commands.Bot(command_prefix='*', intents=intents, help_command=None)
 
     @bot.event
@@ -432,7 +422,7 @@ async def start_bot(token):
         if msg.author.bot:
             return
         try:
-            await handle_commands(bot, msg)  # Pass the bot to handle_commands
+            await handle_commands(bot, msg) 
         except Exception as e:
             print(f"[ERROR] in handle_commands: {e}")
         await bot.process_commands(msg)
@@ -454,10 +444,11 @@ if __name__ == "__main__":
 
     try:
         for token in tokens:
-            loop.create_task(start_bot(token))  # Ensure each token is used
+            loop.create_task(start_bot(token))  
         loop.run_forever()
     except KeyboardInterrupt:
         print("Shutting down bots...")
         loop.run_until_complete(asyncio.gather(*asyncio.all_tasks()))
+
 
 
