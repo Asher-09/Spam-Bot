@@ -10,7 +10,6 @@ async def check_token(token):
         @client.event
         async def on_ready():
             print(f"✅ Valid token: {token} — Logged in as {client.user}")
-            # Save valid token to a file
             with open("valid_tokens.txt", "a") as vf:
                 vf.write(token + "\n")
             await client.close()
@@ -25,7 +24,6 @@ async def check_token(token):
             await client.close()
 
 def main():
-    # Clear the file if it exists already
     open("valid_tokens.txt", "w").close()
 
     with open('tokens.txt', 'r') as f:
@@ -36,3 +34,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+
